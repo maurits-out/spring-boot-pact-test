@@ -280,7 +280,6 @@ public class RestBucksClientTest {
                 () -> client.updateOrder(1, orderDetails));
 
         Order order = ex.getOrder();
-
         assertAll(
                 () -> assertNotNull(order),
                 () -> assertEquals(1, order.getId()),
