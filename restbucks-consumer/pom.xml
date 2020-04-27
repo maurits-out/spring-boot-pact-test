@@ -47,4 +47,18 @@
         </dependency>
     </dependencies>
 
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>au.com.dius</groupId>
+                <artifactId>pact-jvm-provider-maven</artifactId>
+                <configuration>
+                    <pactBrokerUrl>http://localhost:8080</pactBrokerUrl>
+                    <projectVersion>${project.version}</projectVersion>
+                    <trimSnapshot>true</trimSnapshot>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
 </project>
