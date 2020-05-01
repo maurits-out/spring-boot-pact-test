@@ -8,8 +8,8 @@ This project requires a running Pact Broker instance. In this section we describ
 First obtain the images using the following commands:
 
 ```bash
-docker pull postgres
-docker pull dius/pact-broker
+podman pull postgres
+podman pull dius/pact-broker
 ```
 
 Next create a pod as follows:
