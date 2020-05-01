@@ -21,6 +21,7 @@
 
     <modules>
         <module>restbucks-consumer</module>
+        <module>restbucks-producer</module>
     </modules>
 
     <properties>
@@ -66,6 +67,12 @@
             <dependency>
                 <groupId>au.com.dius</groupId>
                 <artifactId>pact-jvm-consumer-java8</artifactId>
+                <version>${pact.version}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>au.com.dius</groupId>
+                <artifactId>pact-jvm-provider-junit5-spring</artifactId>
                 <version>${pact.version}</version>
                 <scope>test</scope>
             </dependency>
