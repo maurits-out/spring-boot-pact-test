@@ -14,7 +14,7 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = DEFINED_PORT)
 @Provider("RestBucksProvider")
-@PactBroker(host = "localhost", port = "8080")
+@PactBroker
 public class RestBucksProviderContractIT {
 
     @TestTemplate
