@@ -40,4 +40,9 @@ public class Order {
     public String getStatus() {
         return status;
     }
+
+    public void setOrderDetails(OrderDetails orderDetails) {
+        this.orderDetails = orderDetails;
+        this.orderDetails.updateOrder(this);
+    }
 }

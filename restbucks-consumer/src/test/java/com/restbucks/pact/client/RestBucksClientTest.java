@@ -53,7 +53,7 @@ public class RestBucksClientTest {
                 .willRespondWith()
                 .status(200)
                 .body(newJsonBody(order -> {
-                    order.id("id", 1L);
+                    order.id("id");
                     order.stringValue("status", "pending");
                     order.object("details", details -> {
                         details.stringValue("location", "takeAway");
@@ -101,8 +101,8 @@ public class RestBucksClientTest {
     public RequestResponsePact updatePendingOrder(PactDslWithProvider builder) {
         return builder
                 .given("a pending order")
-                .uponReceiving("a request to update the order")
-                .path("/order/1")
+                .uponReceiving("a request to update the pending order")
+                .pathFromProviderState("/order/${id}", "/order/1")
                 .method("PUT")
                 .body(newJsonBody(details -> {
                     details.stringValue("location", "takeAway");
@@ -229,7 +229,7 @@ public class RestBucksClientTest {
 
         assertAll(
                 () -> assertNotNull(order),
-                () -> assertEquals(1, order.getId()),
+                () -> assertTrue(order.getId() > 0),
                 () -> assertEquals("pending", order.getStatus()),
                 () -> assertEquals(orderDetails, order.getDetails()));
     }

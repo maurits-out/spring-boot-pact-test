@@ -18,8 +18,9 @@ public class OrderDetails {
     protected OrderDetails() {
     }
 
-    public OrderDetails(String location) {
+    public OrderDetails(String location, List<Item> items) {
         this.location = location;
+        this.items = items;
     }
 
     public String getLocation() {
