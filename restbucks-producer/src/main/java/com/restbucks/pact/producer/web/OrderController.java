@@ -3,11 +3,13 @@ package com.restbucks.pact.producer.web;
 import com.restbucks.pact.producer.domain.Order;
 import com.restbucks.pact.producer.domain.OrderDetails;
 import com.restbucks.pact.producer.service.OrderAlreadyServedException;
+import com.restbucks.pact.producer.service.OrderNotFoundException;
 import com.restbucks.pact.producer.service.OrderService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import static org.springframework.http.HttpStatus.CONFLICT;
+import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.ResponseEntity.ok;
 import static org.springframework.http.ResponseEntity.status;
 
@@ -36,7 +38,11 @@ public class OrderController {
     }
 
     @GetMapping("/{id}")
-    Order getOrder(@PathVariable Long id) {
-        return orderService.findById(id);
+    ResponseEntity<Order> getOrder(@PathVariable Long id) {
+        try {
+            return ok(orderService.findById(id));
+        } catch (OrderNotFoundException ex) {
+            return status(NOT_FOUND).build();
+        }
     }
 }

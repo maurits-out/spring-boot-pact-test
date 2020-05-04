@@ -37,6 +37,6 @@ public class OrderService {
     public Order findById(Long id) {
         return orderRepository
                 .findById(id)
-                .orElseThrow(() -> new NoSuchElementException("Order not found: " + id));
+                .orElseThrow(OrderNotFoundException::new);
     }
 }

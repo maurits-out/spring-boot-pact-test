@@ -71,4 +71,11 @@ public class RestBucksProviderContractIT {
     Map<String, Long> toOrderState() {
         return toServedOrderState();
     }
+
+    @State("no order exists with id 1")
+    void toMissingOrderState() {
+        if (orderRepository.existsById(1L)) {
+            orderRepository.deleteById(1L);
+        }
+    }
 }

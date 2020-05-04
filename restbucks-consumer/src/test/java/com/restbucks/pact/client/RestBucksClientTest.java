@@ -172,7 +172,8 @@ public class RestBucksClientTest {
     @Pact(consumer = "RestBucksClient")
     public RequestResponsePact orderDoesNotExist(PactDslWithProvider builder) {
         return builder
-                .uponReceiving("a request to retrieve a non existing order")
+                .given("no order exists with id 1")
+                .uponReceiving("a request to retrieve non-existing order with id 1")
                 .path("/order/1")
                 .method("GET")
                 .willRespondWith()
