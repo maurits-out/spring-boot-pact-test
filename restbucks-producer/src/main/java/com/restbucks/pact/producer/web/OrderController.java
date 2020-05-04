@@ -8,10 +8,8 @@ import com.restbucks.pact.producer.service.OrderService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import static org.springframework.http.HttpStatus.CONFLICT;
-import static org.springframework.http.HttpStatus.NOT_FOUND;
-import static org.springframework.http.ResponseEntity.ok;
-import static org.springframework.http.ResponseEntity.status;
+import static org.springframework.http.HttpStatus.*;
+import static org.springframework.http.ResponseEntity.*;
 
 @RestController
 @RequestMapping("/order")
@@ -43,6 +41,18 @@ public class OrderController {
             return ok(orderService.findById(id));
         } catch (OrderNotFoundException ex) {
             return status(NOT_FOUND).build();
+        }
+    }
+
+    @DeleteMapping("/{id}")
+    ResponseEntity<Object> deleteOrder(@PathVariable Long id) {
+        try {
+            orderService.deleteOrder(id);
+            return noContent().build();
+        } catch (OrderNotFoundException ex) {
+            return status(NOT_FOUND).build();
+        } catch (OrderAlreadyServedException ex) {
+            return status(METHOD_NOT_ALLOWED).build();
         }
     }
 }

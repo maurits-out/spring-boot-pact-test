@@ -47,7 +47,7 @@ public class RestBucksProviderContractIT {
         context.verifyInteraction();
     }
 
-    @State("a pending order with Caffe Latte and milk set to 'whole'")
+    @State({"a pending order with Caffe Latte and milk set to 'whole'", "a pending order"})
     Map<String, Long> toPendingOrderState() {
         Item item = new Item("latte", 1, "whole", "small");
         OrderDetails orderDetails = new OrderDetails("takeAway", List.of(item));
@@ -57,7 +57,7 @@ public class RestBucksProviderContractIT {
         return Map.of("id", order.getId());
     }
 
-    @State("a served order")
+    @State({"a served order", "an order"})
     Map<String, Long> toServedOrderState() {
         Item item = new Item("cappuccino", 2, "skim", "large");
         OrderDetails orderDetails = new OrderDetails("takeAway", List.of(item));
@@ -67,15 +67,12 @@ public class RestBucksProviderContractIT {
         return Map.of("id", order.getId());
     }
 
-    @State("an order")
-    Map<String, Long> toOrderState() {
-        return toServedOrderState();
-    }
-
     @State("no order exists with id 1")
     void toMissingOrderState() {
         if (orderRepository.existsById(1L)) {
             orderRepository.deleteById(1L);
         }
     }
+
+
 }

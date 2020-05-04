@@ -34,6 +34,19 @@ public class OrderService {
         return orderRepository.save(order);
     }
 
+    public void deleteOrder(Long id) {
+        Order order = orderRepository
+                .findById(id)
+                .orElseThrow(OrderNotFoundException::new);
+        if (!orderRepository.existsById(id)) {
+            throw new OrderNotFoundException();
+        }
+        if (order.getStatus().equals("served")) {
+            throw new OrderAlreadyServedException(order);
+        }
+        orderRepository.deleteById(id);
+    }
+
     public Order findById(Long id) {
         return orderRepository
                 .findById(id)

@@ -74,7 +74,7 @@ public class RestBucksClientTest {
     public RequestResponsePact order(PactDslWithProvider builder) {
         return builder
                 .given("an order")
-                .uponReceiving("a request to retrieve the order")
+                .uponReceiving("a request to retrieve an order")
                 .pathFromProviderState("/order/${id}", "/order/1")
                 .method("GET")
                 .willRespondWith()
@@ -185,8 +185,8 @@ public class RestBucksClientTest {
     public RequestResponsePact deletePendingOrder(PactDslWithProvider builder) {
         return builder
                 .given("a pending order")
-                .uponReceiving("a request to a delete the order")
-                .path("/order/1")
+                .uponReceiving("a request to a delete a pending order")
+                .pathFromProviderState("/order/${id}", "/order/1")
                 .method("DELETE")
                 .willRespondWith()
                 .status(204)
@@ -196,7 +196,8 @@ public class RestBucksClientTest {
     @Pact(consumer = "RestBucksClient")
     public RequestResponsePact deleteOrderDoesNotExist(PactDslWithProvider builder) {
         return builder
-                .uponReceiving("a request to delete the order")
+                .given("no order exists with id 1")
+                .uponReceiving("a request to delete a non-existing order")
                 .path("/order/1")
                 .method("DELETE")
                 .willRespondWith()
@@ -208,8 +209,8 @@ public class RestBucksClientTest {
     public RequestResponsePact deleteServedOrder(PactDslWithProvider builder) {
         return builder
                 .given("a served order")
-                .uponReceiving("a request to delete the order")
-                .path("/order/1")
+                .uponReceiving("a request to delete a served order")
+                .pathFromProviderState("/order/${id}", "/order/1")
                 .method("DELETE")
                 .willRespondWith()
                 .status(405)
