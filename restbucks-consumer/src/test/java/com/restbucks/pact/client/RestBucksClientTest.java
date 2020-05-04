@@ -19,6 +19,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import java.util.List;
 
 import static io.pactfoundation.consumer.dsl.LambdaDsl.newJsonBody;
+import static java.net.HttpURLConnection.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(PactConsumerTestExt.class)
@@ -51,7 +52,7 @@ public class RestBucksClientTest {
                     });
                 }).build())
                 .willRespondWith()
-                .status(200)
+                .status(HTTP_OK)
                 .body(newJsonBody(order -> {
                     order.id("id");
                     order.stringValue("status", "pending");
@@ -78,7 +79,7 @@ public class RestBucksClientTest {
                 .pathFromProviderState("/order/${id}", "/order/1")
                 .method("GET")
                 .willRespondWith()
-                .status(200)
+                .status(HTTP_OK)
                 .body(newJsonBody(order -> {
                     order.id("id");
                     order.stringType("status", "pending");
@@ -114,7 +115,7 @@ public class RestBucksClientTest {
                     });
                 }).build())
                 .willRespondWith()
-                .status(200)
+                .status(HTTP_OK)
                 .body(newJsonBody(order -> {
                     order.id("id");
                     order.stringValue("status", "pending");
@@ -152,7 +153,7 @@ public class RestBucksClientTest {
                     });
                 }).build())
                 .willRespondWith()
-                .status(409)
+                .status(HTTP_CONFLICT)
                 .body(newJsonBody(order -> {
                     order.id("id");
                     order.stringValue("status", "served");
@@ -177,7 +178,7 @@ public class RestBucksClientTest {
                 .path("/order/1")
                 .method("GET")
                 .willRespondWith()
-                .status(404)
+                .status(HTTP_NOT_FOUND)
                 .toPact();
     }
 
@@ -189,7 +190,7 @@ public class RestBucksClientTest {
                 .pathFromProviderState("/order/${id}", "/order/1")
                 .method("DELETE")
                 .willRespondWith()
-                .status(204)
+                .status(HTTP_NO_CONTENT)
                 .toPact();
     }
 
@@ -201,7 +202,7 @@ public class RestBucksClientTest {
                 .path("/order/1")
                 .method("DELETE")
                 .willRespondWith()
-                .status(404)
+                .status(HTTP_NOT_FOUND)
                 .toPact();
     }
 
@@ -213,7 +214,7 @@ public class RestBucksClientTest {
                 .pathFromProviderState("/order/${id}", "/order/1")
                 .method("DELETE")
                 .willRespondWith()
-                .status(405)
+                .status(HTTP_BAD_METHOD)
                 .toPact();
     }
 

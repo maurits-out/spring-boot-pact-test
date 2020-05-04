@@ -2,7 +2,7 @@ package com.restbucks.pact.client.exceptions;
 
 import com.restbucks.pact.client.domain.Order;
 
-public class OrderAlreadyServedException extends RestBucksClientException {
+public final class OrderAlreadyServedException extends RestBucksClientException {
 
     private final Order order;
 

@@ -1,6 +1,6 @@
 package com.restbucks.pact.client.exceptions;
 
-public class OrderArchivedException extends RestBucksClientException {
+public final class OrderArchivedException extends RestBucksClientException {
     private final long id;
 
     public OrderArchivedException(long id) {

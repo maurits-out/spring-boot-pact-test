@@ -10,16 +10,25 @@ import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.core.Response;
 
+import static java.net.HttpURLConnection.*;
 import static javax.ws.rs.client.Entity.entity;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON_TYPE;
 
-public class RestBucksClient {
+/**
+ * The RestBucksClient is a simple Java class that uses JAX-WS to call the RestBucks API.
+ */
+public final class RestBucksClient {
 
     private final String baseUrl;
 
     private final Client client = ClientBuilder.newClient();
 
+    /**
+     * Constructor.
+     *
+     * @param baseUrl the base URL of the endpoint that exposes the RestBucks API (e.g. http://localhost:8080)
+     */
     public RestBucksClient(String baseUrl) {
         this.baseUrl = baseUrl;
     }
@@ -36,7 +45,7 @@ public class RestBucksClient {
         Response response = client.target(baseUrl + "/order/" + id)
                 .request(APPLICATION_JSON)
                 .get();
-        if (response.getStatus() == 404) {
+        if (response.getStatus() == HTTP_NOT_FOUND) {
             throw new OrderNotFoundException(id);
         }
         return response.readEntity(Order.class);
@@ -47,7 +56,7 @@ public class RestBucksClient {
                 .request(APPLICATION_JSON)
                 .put(entity(orderDetails, APPLICATION_JSON_TYPE.withCharset("UTF-8")));
         Order order = response.readEntity(Order.class);
-        if (response.getStatus() == 409) {
+        if (response.getStatus() == HTTP_CONFLICT) {
             throw new OrderAlreadyServedException(order);
         }
         return order;
@@ -57,10 +66,10 @@ public class RestBucksClient {
         Response response = client.target(baseUrl + "/order/" + id)
                 .request(APPLICATION_JSON)
                 .delete();
-        if (response.getStatus() == 404) {
+        if (response.getStatus() == HTTP_NOT_FOUND) {
             throw new OrderNotFoundException(id);
         }
-        if (response.getStatus() == 405) {
+        if (response.getStatus() == HTTP_BAD_METHOD) {
             throw new OrderArchivedException(id);
         }
     }

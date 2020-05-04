@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.Objects;
 
-public class Order {
+public final class Order {
 
     private final long id;
     private final OrderDetails details;

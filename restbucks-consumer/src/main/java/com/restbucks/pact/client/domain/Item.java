@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.Objects;
 
-public class Item {
+public final class Item {
 
     private final String name;
     private final int quantity;

@@ -40,6 +40,18 @@
         <plugins>
             <plugin>
                 <artifactId>maven-failsafe-plugin</artifactId>
+                <configuration>
+                    <systemProperties>
+                        <propery>
+                            <name>pact.provider.version</name>
+                            <value>1.0</value>
+                        </propery>
+                        <property>
+                            <name>pact.verifier.publishResults</name>
+                            <value>true</value>
+                        </property>
+                    </systemProperties>
+                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
