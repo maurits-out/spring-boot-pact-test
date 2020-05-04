@@ -73,24 +73,22 @@ public class RestBucksClientTest {
     @Pact(consumer = "RestBucksClient")
     public RequestResponsePact order(PactDslWithProvider builder) {
         return builder
-                .given("a pending order")
+                .given("an order")
                 .uponReceiving("a request to retrieve the order")
-                .path("/order/1")
+                .pathFromProviderState("/order/${id}", "/order/1")
                 .method("GET")
                 .willRespondWith()
                 .status(200)
                 .body(newJsonBody(order -> {
-                    order.id("id", 1L);
-                    order.stringValue("status", "pending");
+                    order.id("id");
+                    order.stringType("status", "pending");
                     order.object("details", details -> {
-                        details.stringValue("location", "takeAway");
-                        details.array("items", items -> {
-                            items.object(item -> {
-                                item.stringValue("name", "latte");
-                                item.numberValue("quantity", 1);
-                                item.stringValue("milk", "whole");
-                                item.stringValue("size", "small");
-                            });
+                        details.stringType("location", "takeAway");
+                        details.eachLike("items", 1, item -> {
+                            item.stringType("name", "latte");
+                            item.numberType("quantity", 1);
+                            item.stringType("milk", "whole");
+                            item.stringType("size", "small");
                         });
                     });
                 }).build())
@@ -239,7 +237,7 @@ public class RestBucksClientTest {
 
         assertAll(
                 () -> assertNotNull(order),
-                () -> assertEquals(1, order.getId()),
+                () -> assertTrue(order.getId() > 0),
                 () -> assertEquals("pending", order.getStatus()),
                 () -> assertEquals("takeAway", order.getDetails().getLocation()),
                 () -> assertFalse(order.getDetails().getItems().isEmpty()),

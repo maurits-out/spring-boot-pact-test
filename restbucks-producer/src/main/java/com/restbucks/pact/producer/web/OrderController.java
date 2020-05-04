@@ -34,4 +34,9 @@ public class OrderController {
             return status(CONFLICT).body(ex.getOrder());
         }
     }
+
+    @GetMapping("/{id}")
+    Order getOrder(@PathVariable Long id) {
+        return orderService.findById(id);
+    }
 }

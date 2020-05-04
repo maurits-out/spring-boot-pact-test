@@ -33,4 +33,10 @@ public class OrderService {
         order.setOrderDetails(orderDetails);
         return orderRepository.save(order);
     }
+
+    public Order findById(Long id) {
+        return orderRepository
+                .findById(id)
+                .orElseThrow(() -> new NoSuchElementException("Order not found: " + id));
+    }
 }

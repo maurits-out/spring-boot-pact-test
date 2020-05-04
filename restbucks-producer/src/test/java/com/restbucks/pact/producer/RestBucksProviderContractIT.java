@@ -66,4 +66,9 @@ public class RestBucksProviderContractIT {
 
         return Map.of("id", order.getId());
     }
+
+    @State("an order")
+    Map<String, Long> toOrderState() {
+        return toServedOrderState();
+    }
 }
