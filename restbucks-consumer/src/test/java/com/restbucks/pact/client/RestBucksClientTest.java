@@ -100,7 +100,7 @@ public class RestBucksClientTest {
     @Pact(consumer = "RestBucksClient")
     public RequestResponsePact updatePendingOrder(PactDslWithProvider builder) {
         return builder
-                .given("a pending order")
+                .given("a pending order with Caffe Latte and milk set to 'whole'")
                 .uponReceiving("a request to update the pending order")
                 .pathFromProviderState("/order/${id}", "/order/1")
                 .method("PUT")
@@ -118,7 +118,7 @@ public class RestBucksClientTest {
                 .willRespondWith()
                 .status(200)
                 .body(newJsonBody(order -> {
-                    order.id("id", 1L);
+                    order.id("id");
                     order.stringValue("status", "pending");
                     order.object("details", details -> {
                         details.stringValue("location", "takeAway");
@@ -139,8 +139,8 @@ public class RestBucksClientTest {
     public RequestResponsePact updateServedOrder(PactDslWithProvider builder) {
         return builder
                 .given("a served order")
-                .uponReceiving("a request to update the order")
-                .path("/order/1")
+                .uponReceiving("a request to update the served order")
+                .pathFromProviderState("/order/${id}", "/order/1")
                 .method("PUT")
                 .body(newJsonBody(details -> {
                     details.stringValue("location", "takeAway");
@@ -156,17 +156,15 @@ public class RestBucksClientTest {
                 .willRespondWith()
                 .status(409)
                 .body(newJsonBody(order -> {
-                    order.id("id", 1L);
+                    order.id("id");
                     order.stringValue("status", "served");
                     order.object("details", details -> {
-                        details.stringValue("location", "takeAway");
-                        details.array("items", items -> {
-                            items.object(item -> {
-                                item.stringValue("name", "latte");
-                                item.numberValue("quantity", 1);
-                                item.stringValue("milk", "skim");
-                                item.stringValue("size", "small");
-                            });
+                        details.stringType("location", "takeAway");
+                        details.eachLike("items", 1, item -> {
+                            item.stringType("name", "latte");
+                            item.numberType("quantity", 1);
+                            item.stringType("milk", "whole");
+                            item.stringType("size", "small");
                         });
                     });
                 }).build())
@@ -265,7 +263,7 @@ public class RestBucksClientTest {
 
         assertAll(
                 () -> assertNotNull(order),
-                () -> assertEquals(1, order.getId()),
+                () -> assertTrue(order.getId() > 0),
                 () -> assertEquals("pending", order.getStatus()),
                 () -> assertEquals(orderDetails, order.getDetails()));
     }
@@ -282,9 +280,11 @@ public class RestBucksClientTest {
         Order order = ex.getOrder();
         assertAll(
                 () -> assertNotNull(order),
-                () -> assertEquals(1, order.getId()),
+                () -> assertTrue(order.getId() > 0),
                 () -> assertEquals("served", order.getStatus()),
-                () -> assertEquals(orderDetails, order.getDetails()));
+                () -> assertNotNull(order.getDetails()),
+                () -> assertEquals("takeAway", order.getDetails().getLocation()),
+                () -> assertEquals(order.getDetails().getItems(), List.of(new Item("latte", 1, "whole", "small"))));
     }
 
     @Test

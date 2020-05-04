@@ -24,12 +24,13 @@ public class OrderService {
     }
 
     public Order updateOrder(Long id, OrderDetails orderDetails) {
-        return orderRepository
+        Order order = orderRepository
                 .findById(id)
-                .map(order -> {
-                    order.setOrderDetails(orderDetails);
-                    return orderRepository.save(order);
-                })
                 .orElseThrow(() -> new NoSuchElementException("Order not found: " + id));
+        if (order.getStatus().equals("served")) {
+            throw new OrderAlreadyServedException(order);
+        }
+        order.setOrderDetails(orderDetails);
+        return orderRepository.save(order);
     }
 }

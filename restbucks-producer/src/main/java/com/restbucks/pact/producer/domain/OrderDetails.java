@@ -5,14 +5,14 @@ import javax.persistence.OneToMany;
 import java.util.List;
 
 import static javax.persistence.CascadeType.ALL;
-import static javax.persistence.FetchType.LAZY;
+import static javax.persistence.FetchType.EAGER;
 
 @Embeddable
 public class OrderDetails {
 
     private String location;
 
-    @OneToMany(mappedBy = "order", fetch = LAZY, cascade = ALL)
+    @OneToMany(mappedBy = "order", fetch = EAGER, cascade = ALL)
     private List<Item> items;
 
     protected OrderDetails() {
