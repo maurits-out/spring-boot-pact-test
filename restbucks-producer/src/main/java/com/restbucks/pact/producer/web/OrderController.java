@@ -22,8 +22,9 @@ public class OrderController {
     }
 
     @PostMapping
-    Order createOrder(@RequestBody OrderDetails orderDetails) {
-        return orderService.createOrder(orderDetails);
+    ResponseEntity<Order> createOrder(@RequestBody OrderDetails orderDetails) {
+        Order order = orderService.createOrder(orderDetails);
+        return status(CREATED).body(order);
     }
 
     @PutMapping("/{id}")
@@ -45,9 +46,9 @@ public class OrderController {
     }
 
     @DeleteMapping("/{id}")
-    ResponseEntity<Object> deleteOrder(@PathVariable Long id) {
+    ResponseEntity<Object> cancelOrder(@PathVariable Long id) {
         try {
-            orderService.deleteOrder(id);
+            orderService.cancelOrder(id);
             return noContent().build();
         } catch (OrderNotFoundException ex) {
             return status(NOT_FOUND).build();

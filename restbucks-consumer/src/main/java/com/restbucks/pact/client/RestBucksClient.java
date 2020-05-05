@@ -8,9 +8,11 @@ import com.restbucks.pact.client.exceptions.OrderNotFoundException;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import static java.net.HttpURLConnection.*;
+import static java.nio.charset.StandardCharsets.UTF_8;
 import static javax.ws.rs.client.Entity.entity;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON_TYPE;
@@ -20,7 +22,9 @@ import static javax.ws.rs.core.MediaType.APPLICATION_JSON_TYPE;
  */
 public final class RestBucksClient {
 
-    private final String baseUrl;
+    private static final MediaType JSON_UTF_8_MEDIA_TYPE = APPLICATION_JSON_TYPE.withCharset(UTF_8.displayName());
+
+    private final String orderUrl;
 
     private final Client client = ClientBuilder.newClient();
 
@@ -30,19 +34,19 @@ public final class RestBucksClient {
      * @param baseUrl the base URL of the endpoint that exposes the RestBucks API (e.g. http://localhost:8080)
      */
     public RestBucksClient(String baseUrl) {
-        this.baseUrl = baseUrl;
+        this.orderUrl = baseUrl + "/order";
     }
 
     public Order bookOrder(OrderDetails orderDetails) {
         return client
-                .target(baseUrl + "/order")
+                .target(orderUrl)
                 .request(APPLICATION_JSON)
-                .post(entity(orderDetails, APPLICATION_JSON_TYPE.withCharset("UTF-8")))
+                .post(entity(orderDetails, JSON_UTF_8_MEDIA_TYPE))
                 .readEntity(Order.class);
     }
 
     public Order getOrder(long id) {
-        Response response = client.target(baseUrl + "/order/" + id)
+        Response response = client.target(orderUrl + "/" + id)
                 .request(APPLICATION_JSON)
                 .get();
         if (response.getStatus() == HTTP_NOT_FOUND) {
@@ -52,9 +56,9 @@ public final class RestBucksClient {
     }
 
     public Order updateOrder(long id, OrderDetails orderDetails) {
-        Response response = client.target(baseUrl + "/order/" + id)
+        Response response = client.target(orderUrl + "/" + id)
                 .request(APPLICATION_JSON)
-                .put(entity(orderDetails, APPLICATION_JSON_TYPE.withCharset("UTF-8")));
+                .put(entity(orderDetails, JSON_UTF_8_MEDIA_TYPE));
         Order order = response.readEntity(Order.class);
         if (response.getStatus() == HTTP_CONFLICT) {
             throw new OrderAlreadyServedException(order);
@@ -62,8 +66,8 @@ public final class RestBucksClient {
         return order;
     }
 
-    public void deleteOrder(long id) {
-        Response response = client.target(baseUrl + "/order/" + id)
+    public void cancelOrder(long id) {
+        Response response = client.target(orderUrl + "/" + id)
                 .request(APPLICATION_JSON)
                 .delete();
         if (response.getStatus() == HTTP_NOT_FOUND) {
@@ -72,5 +76,9 @@ public final class RestBucksClient {
         if (response.getStatus() == HTTP_BAD_METHOD) {
             throw new OrderArchivedException(id);
         }
+    }
+
+    public void close() {
+        client.close();
     }
 }

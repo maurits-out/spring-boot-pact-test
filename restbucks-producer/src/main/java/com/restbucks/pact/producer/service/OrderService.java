@@ -34,7 +34,7 @@ public class OrderService {
         return orderRepository.save(order);
     }
 
-    public void deleteOrder(Long id) {
+    public void cancelOrder(Long id) {
         Order order = orderRepository
                 .findById(id)
                 .orElseThrow(OrderNotFoundException::new);

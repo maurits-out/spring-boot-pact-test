@@ -12,6 +12,7 @@ import com.restbucks.pact.client.domain.OrderDetails;
 import com.restbucks.pact.client.exceptions.OrderAlreadyServedException;
 import com.restbucks.pact.client.exceptions.OrderArchivedException;
 import com.restbucks.pact.client.exceptions.OrderNotFoundException;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -34,6 +35,11 @@ public class RestBucksClientTest {
         client = new RestBucksClient(mockServer.getUrl());
     }
 
+    @AfterEach
+    void tearDown() {
+        client.close();
+    }
+
     @Pact(consumer = "RestBucksClient")
     public RequestResponsePact placeOrder(PactDslWithProvider builder) {
         return builder
@@ -52,7 +58,7 @@ public class RestBucksClientTest {
                     });
                 }).build())
                 .willRespondWith()
-                .status(HTTP_OK)
+                .status(HTTP_CREATED)
                 .body(newJsonBody(order -> {
                     order.id("id");
                     order.stringValue("status", "pending");
@@ -85,7 +91,7 @@ public class RestBucksClientTest {
                     order.stringType("status", "pending");
                     order.object("details", details -> {
                         details.stringType("location", "takeAway");
-                        details.eachLike("items", 1, item -> {
+                        details.minArrayLike("items", 1, item -> {
                             item.stringType("name", "latte");
                             item.numberType("quantity", 1);
                             item.stringType("milk", "whole");
@@ -159,7 +165,7 @@ public class RestBucksClientTest {
                     order.stringValue("status", "served");
                     order.object("details", details -> {
                         details.stringType("location", "takeAway");
-                        details.eachLike("items", 1, item -> {
+                        details.minArrayLike("items", 1, item -> {
                             item.stringType("name", "latte");
                             item.numberType("quantity", 1);
                             item.stringType("milk", "whole");
@@ -183,10 +189,10 @@ public class RestBucksClientTest {
     }
 
     @Pact(consumer = "RestBucksClient")
-    public RequestResponsePact deletePendingOrder(PactDslWithProvider builder) {
+    public RequestResponsePact cancelPendingOrder(PactDslWithProvider builder) {
         return builder
                 .given("a pending order")
-                .uponReceiving("a request to a delete a pending order")
+                .uponReceiving("a request to a cancel a pending order")
                 .pathFromProviderState("/order/${id}", "/order/1")
                 .method("DELETE")
                 .willRespondWith()
@@ -195,7 +201,7 @@ public class RestBucksClientTest {
     }
 
     @Pact(consumer = "RestBucksClient")
-    public RequestResponsePact deleteOrderDoesNotExist(PactDslWithProvider builder) {
+    public RequestResponsePact cancelOrderDoesNotExist(PactDslWithProvider builder) {
         return builder
                 .given("no order exists with id 1")
                 .uponReceiving("a request to delete a non-existing order")
@@ -207,7 +213,7 @@ public class RestBucksClientTest {
     }
 
     @Pact(consumer = "RestBucksClient")
-    public RequestResponsePact deleteServedOrder(PactDslWithProvider builder) {
+    public RequestResponsePact cancelServedOrder(PactDslWithProvider builder) {
         return builder
                 .given("a served order")
                 .uponReceiving("a request to delete a served order")
@@ -289,22 +295,22 @@ public class RestBucksClientTest {
     }
 
     @Test
-    @PactTestFor(pactMethod = "deletePendingOrder")
-    public void testDeletePendingOrder() {
-        client.deleteOrder(1);
+    @PactTestFor(pactMethod = "cancelPendingOrder")
+    public void testCancelPendingOrder() {
+        client.cancelOrder(1);
     }
 
     @Test
-    @PactTestFor(pactMethod = "deleteOrderDoesNotExist")
-    public void testDeleteOrderDoesNotExist() {
-        OrderNotFoundException ex = assertThrows(OrderNotFoundException.class, () -> client.deleteOrder(1L));
+    @PactTestFor(pactMethod = "cancelOrderDoesNotExist")
+    public void testCancelOrderDoesNotExist() {
+        OrderNotFoundException ex = assertThrows(OrderNotFoundException.class, () -> client.cancelOrder(1L));
         assertEquals(1, ex.getId());
     }
 
     @Test
-    @PactTestFor(pactMethod = "deleteServedOrder")
-    public void testDeleteServedOrder() {
-        OrderArchivedException ex = assertThrows(OrderArchivedException.class, () -> client.deleteOrder(1L));
+    @PactTestFor(pactMethod = "cancelServedOrder")
+    public void testCancelServedOrder() {
+        OrderArchivedException ex = assertThrows(OrderArchivedException.class, () -> client.cancelOrder(1L));
         assertEquals(1, ex.getId());
     }
 }
