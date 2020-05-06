@@ -77,6 +77,7 @@ consumer and the provider have a shared and accurate understanding of the conten
 With consumer-driven contracts it is the consumer that sets the expectations of these messages. The consumer specifies
 them in a contract. That contract is subsequently shared with the provider so that the provider knows what to implement
 in order to fulfil this contract.
+
    
 [1]: https://martinfowler.com/bliki/ContractTest.html "ContractTest"
 [2]: https://martinfowler.com/articles/consumerDrivenContracts.html "Consumer-Driven Contracts: A Service Evolution Pattern"

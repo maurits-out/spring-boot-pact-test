@@ -38,6 +38,10 @@ public class RestBucksProviderContractIT {
     @BeforeEach
     void setupTestTarget(PactVerificationContext context) {
         context.setTarget(new HttpTestTarget("localhost", serverPort, "/"));
+    }
+
+    @BeforeEach
+    void resetRepository() {
         orderRepository.deleteAll();
     }
 
@@ -73,6 +77,4 @@ public class RestBucksProviderContractIT {
             orderRepository.deleteById(1L);
         }
     }
-
-
 }
