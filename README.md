@@ -1,6 +1,6 @@
 # Introduction
-My demo project to learn about contract testing ([Fowler][1]) and consumer driven contracts ([Robinson][2]). I recommend 
-you to read these blog posts before moving on.
+My demo project to learn about contract testing ([Fowler][1]) and consumer driven contracts ([Robinson][2]) using
+ [Pact][3]. I recommend you to read these blog posts before moving on.
 
 # RestBucks: A Little Coffee Shop
 In this project we use a simplified version of the RestBucks example as described in the book 'REST in Practise' by Jim
@@ -20,8 +20,8 @@ An order can be cancelled by sending a DELETE request to the RestBucks server. A
 state is 'pending'. If the state is 'served' then the RestBucks server rejects the request.
 
 # Pact Broker
-In this project we will be using [Pact][3]. A running Pact Broker instance is required. In this section we describe how
-to set this up using [Podman](https://podman.io/).
+A running Pact Broker instance is required. In this section we describe how to set this up using
+[Podman](https://podman.io/).
 
 First obtain the images using the following commands:
 
@@ -65,20 +65,39 @@ that uses JAX-WS to consume the RESTful web service provided by the RestBucks se
 The RestBucks server has been implemented in the second submodule, *restbucks-producer*. It is a Spring Boot application
 that exposes a RESTful Web Service.
 
-**Notes**:
-1. Normally the consumer and the provider will be separate projects, typically maintained in different
+**Note**: Normally the consumer and the provider will be separate projects, typically maintained in different
 repositories by different teams. However, for simplicity we place both in the same project here.
-2. I cut some corners in the implementation to be able to play around with Pact fast. So don't expect something that is
-ready for production.
 
 # Defining the contract
 Contract testing focuses on the messages that are exchanged between a consumer and a producer. It ensures that the
 consumer and the provider have a shared and accurate understanding of the contents of these messages.
-With consumer-driven contracts it is the consumer that sets the expectations of these messages. The consumer specifies
-them in a contract. That contract is subsequently shared with the provider so that the provider knows what to implement
-in order to fulfil this contract.
+With consumer-driven contracts it is the consumer that sets the expectations of these messages by creating the contract.
+That contract is subsequently shared with the provider so that the provider knows what to implement in order to fulfil
+ this contract.
 
+The consumer project contains the unit test `com.restbucks.pact.client.RestBucksClientTest` that defines the contract. 
+This is done by executing interactions between the consumer and a mock provider. These interactions are recorded in a
+Pact file `RestBucksClient-RestBucksProvider.json` that can be found in the `target/pacts` directory. This PACT file
+forms the actual contract.
+
+# Sharing the contract
+The next step is to share the contract to inform the provider. This can be done by issuing the following Maven command
+from the top project folder:
+
+```bash
+mvn pact:publish -pl restbucks-consumer
+```
+
+# Implementing and verifying the provider
+The provider module contains an integration test `com.restbucks.pact.producer.RestBucksProviderContractIT` that fetches
+the Pact from the Pact Broker and runs the scenarios to verify if the provider satisfies the contract. This can be done
+in a TDD manner. To publish the verification results issue the following Maven command from the top project folder:
+
+```bash
+mvn verify -pl restbucks-producer -Dpact.verifier.publishResults=true
+```
    
 [1]: https://martinfowler.com/bliki/ContractTest.html "ContractTest"
-[2]: https://martinfowler.com/articles/consumerDrivenContracts.html "Consumer-Driven Contracts: A Service Evolution Pattern"
+[2]: https://martinfowler.com/articles/consumerDrivenContracts.html "Consumer-Driven Contracts: A Service Evolution 
+Pattern"
 [3]: https://pact.io/ "Pact"
