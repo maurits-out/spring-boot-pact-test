@@ -59,6 +59,9 @@ public final class RestBucksClient {
         Response response = client.target(orderUrl + "/" + id)
                 .request(APPLICATION_JSON)
                 .put(entity(orderDetails, JSON_UTF_8_MEDIA_TYPE));
+        if (response.getStatus() == HTTP_NOT_FOUND) {
+            throw new OrderNotFoundException(id);
+        }
         Order order = response.readEntity(Order.class);
         if (response.getStatus() == HTTP_CONFLICT) {
             throw new OrderAlreadyServedException(order);

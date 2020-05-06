@@ -31,6 +31,8 @@ public class OrderController {
     ResponseEntity<Order> updateOrder(@PathVariable Long id, @RequestBody OrderDetails orderDetails) {
         try {
             return ok(orderService.updateOrder(id, orderDetails));
+        } catch (OrderNotFoundException ex) {
+            return status(NOT_FOUND).build();
         } catch (OrderAlreadyServedException ex) {
             return status(CONFLICT).body(ex.getOrder());
         }

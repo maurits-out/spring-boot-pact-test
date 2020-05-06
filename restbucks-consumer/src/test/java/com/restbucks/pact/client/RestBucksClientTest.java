@@ -177,10 +177,33 @@ public class RestBucksClientTest {
     }
 
     @Pact(consumer = "RestBucksClient")
+    public RequestResponsePact updateNonexistentOrder(PactDslWithProvider builder) {
+        return builder
+                .given("no order exists with id 1")
+                .uponReceiving("a request to update nonexistent order with id 1")
+                .path("/order/1")
+                .method("PUT")
+                .body(newJsonBody(details -> {
+                    details.stringValue("location", "takeAway");
+                    details.array("items", items -> {
+                        items.object(item -> {
+                            item.stringValue("name", "latte");
+                            item.numberValue("quantity", 1);
+                            item.stringValue("milk", "skim");
+                            item.stringValue("size", "small");
+                        });
+                    });
+                }).build())
+                .willRespondWith()
+                .status(HTTP_NOT_FOUND)
+                .toPact();
+    }
+
+    @Pact(consumer = "RestBucksClient")
     public RequestResponsePact orderDoesNotExist(PactDslWithProvider builder) {
         return builder
                 .given("no order exists with id 1")
-                .uponReceiving("a request to retrieve non-existing order with id 1")
+                .uponReceiving("a request to retrieve nonexistent order with id 1")
                 .path("/order/1")
                 .method("GET")
                 .willRespondWith()
@@ -201,10 +224,10 @@ public class RestBucksClientTest {
     }
 
     @Pact(consumer = "RestBucksClient")
-    public RequestResponsePact cancelOrderDoesNotExist(PactDslWithProvider builder) {
+    public RequestResponsePact cancelNonexistentOrder(PactDslWithProvider builder) {
         return builder
                 .given("no order exists with id 1")
-                .uponReceiving("a request to delete a non-existing order")
+                .uponReceiving("a request to delete a nonexistent order")
                 .path("/order/1")
                 .method("DELETE")
                 .willRespondWith()
@@ -295,14 +318,24 @@ public class RestBucksClientTest {
     }
 
     @Test
+    @PactTestFor(pactMethod = "updateNonexistentOrder")
+    void testUpdateNonexistentOrder() {
+        Item item = new Item("latte", 1, "skim", "small");
+        OrderDetails orderDetails = new OrderDetails("takeAway", List.of(item));
+
+        OrderNotFoundException ex = assertThrows(OrderNotFoundException.class, () -> client.updateOrder(1L, orderDetails));
+        assertEquals(1, ex.getId());
+    }
+
+    @Test
     @PactTestFor(pactMethod = "cancelPendingOrder")
     public void testCancelPendingOrder() {
         client.cancelOrder(1);
     }
 
     @Test
-    @PactTestFor(pactMethod = "cancelOrderDoesNotExist")
-    public void testCancelOrderDoesNotExist() {
+    @PactTestFor(pactMethod = "cancelNonexistentOrder")
+    public void testCancelNonexistentOrder() {
         OrderNotFoundException ex = assertThrows(OrderNotFoundException.class, () -> client.cancelOrder(1L));
         assertEquals(1, ex.getId());
     }

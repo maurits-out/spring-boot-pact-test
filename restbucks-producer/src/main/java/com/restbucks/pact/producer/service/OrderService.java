@@ -6,7 +6,6 @@ import com.restbucks.pact.producer.repository.OrderRepository;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.NoSuchElementException;
 
 @Service
 @Transactional
@@ -26,7 +25,7 @@ public class OrderService {
     public Order updateOrder(Long id, OrderDetails orderDetails) {
         Order order = orderRepository
                 .findById(id)
-                .orElseThrow(() -> new NoSuchElementException("Order not found: " + id));
+                .orElseThrow(OrderNotFoundException::new);
         if (order.getStatus().equals("served")) {
             throw new OrderAlreadyServedException(order);
         }
