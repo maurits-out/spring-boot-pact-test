@@ -2,9 +2,11 @@ package com.restbucks.pact.producer.domain;
 
 import javax.persistence.*;
 
+import static javax.persistence.FetchType.LAZY;
 import static javax.persistence.GenerationType.AUTO;
 
 @Entity
+@Table(name = "items")
 public class Item {
 
     @Id
@@ -16,7 +18,7 @@ public class Item {
     private String milk;
     private String size;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = LAZY, optional = false)
     @JoinColumn(name = "order_id", nullable = false)
     private Order order;
 

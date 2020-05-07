@@ -9,7 +9,6 @@ import com.restbucks.pact.client.exceptions.OrderNotFoundException;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 
 import static java.net.HttpURLConnection.*;
 import static java.nio.charset.StandardCharsets.UTF_8;
@@ -46,7 +45,7 @@ public final class RestBucksClient {
     }
 
     public Order getOrder(long id) {
-        Response response = client.target(orderUrl + "/" + id)
+        var response = client.target(orderUrl + "/" + id)
                 .request(APPLICATION_JSON)
                 .get();
         if (response.getStatus() == HTTP_NOT_FOUND) {
@@ -56,13 +55,13 @@ public final class RestBucksClient {
     }
 
     public Order updateOrder(long id, OrderDetails orderDetails) {
-        Response response = client.target(orderUrl + "/" + id)
+        var response = client.target(orderUrl + "/" + id)
                 .request(APPLICATION_JSON)
                 .put(entity(orderDetails, JSON_UTF_8_MEDIA_TYPE));
         if (response.getStatus() == HTTP_NOT_FOUND) {
             throw new OrderNotFoundException(id);
         }
-        Order order = response.readEntity(Order.class);
+        var order = response.readEntity(Order.class);
         if (response.getStatus() == HTTP_CONFLICT) {
             throw new OrderAlreadyServedException(order);
         }
@@ -70,7 +69,7 @@ public final class RestBucksClient {
     }
 
     public void cancelOrder(long id) {
-        Response response = client.target(orderUrl + "/" + id)
+        var response = client.target(orderUrl + "/" + id)
                 .request(APPLICATION_JSON)
                 .delete();
         if (response.getStatus() == HTTP_NOT_FOUND) {

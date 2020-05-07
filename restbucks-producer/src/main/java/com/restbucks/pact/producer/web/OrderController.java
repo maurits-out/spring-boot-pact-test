@@ -23,7 +23,7 @@ public class OrderController {
 
     @PostMapping
     ResponseEntity<Order> createOrder(@RequestBody OrderDetails orderDetails) {
-        Order order = orderService.createOrder(orderDetails);
+        var order = orderService.createOrder(orderDetails);
         return status(CREATED).body(order);
     }
 

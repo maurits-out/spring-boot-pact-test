@@ -29,7 +29,7 @@ public final class OrderDetails {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        OrderDetails orderDetails = (OrderDetails) o;
+        var orderDetails = (OrderDetails) o;
         return location.equals(orderDetails.location) &&
                 items.equals(orderDetails.items);
     }

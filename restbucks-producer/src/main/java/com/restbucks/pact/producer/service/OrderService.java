@@ -18,12 +18,12 @@ public class OrderService {
     }
 
     public Order createOrder(OrderDetails orderDetails) {
-        Order order = new Order(orderDetails, "pending");
+        var order = new Order(orderDetails, "pending");
         return orderRepository.save(order);
     }
 
     public Order updateOrder(Long id, OrderDetails orderDetails) {
-        Order order = orderRepository
+        var order = orderRepository
                 .findById(id)
                 .orElseThrow(OrderNotFoundException::new);
         if (order.getStatus().equals("served")) {
@@ -34,7 +34,7 @@ public class OrderService {
     }
 
     public void cancelOrder(Long id) {
-        Order order = orderRepository
+        var order = orderRepository
                 .findById(id)
                 .orElseThrow(OrderNotFoundException::new);
         if (!orderRepository.existsById(id)) {

@@ -53,20 +53,20 @@ public class RestBucksProviderContractIT {
 
     @State({"a pending order with Caffe Latte and milk set to 'whole'", "a pending order"})
     Map<String, Long> toPendingOrderState() {
-        Item item = new Item("latte", 1, "whole", "small");
-        OrderDetails orderDetails = new OrderDetails("takeAway", List.of(item));
+        var item = new Item("latte", 1, "whole", "small");
+        var orderDetails = new OrderDetails("takeAway", List.of(item));
 
-        Order order = orderRepository.save(new Order(orderDetails, "pending"));
+        var order = orderRepository.save(new Order(orderDetails, "pending"));
 
         return Map.of("id", order.getId());
     }
 
     @State({"a served order", "an order"})
     Map<String, Long> toServedOrderState() {
-        Item item = new Item("cappuccino", 2, "skim", "large");
-        OrderDetails orderDetails = new OrderDetails("takeAway", List.of(item));
+        var item = new Item("cappuccino", 2, "skim", "large");
+        var orderDetails = new OrderDetails("takeAway", List.of(item));
 
-        Order order = orderRepository.save(new Order(orderDetails, "served"));
+        var order = orderRepository.save(new Order(orderDetails, "served"));
 
         return Map.of("id", order.getId());
     }

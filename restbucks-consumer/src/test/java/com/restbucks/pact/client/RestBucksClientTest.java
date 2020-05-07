@@ -7,7 +7,6 @@ import au.com.dius.pact.consumer.junit5.PactTestFor;
 import au.com.dius.pact.core.model.RequestResponsePact;
 import au.com.dius.pact.core.model.annotations.Pact;
 import com.restbucks.pact.client.domain.Item;
-import com.restbucks.pact.client.domain.Order;
 import com.restbucks.pact.client.domain.OrderDetails;
 import com.restbucks.pact.client.exceptions.OrderAlreadyServedException;
 import com.restbucks.pact.client.exceptions.OrderArchivedException;
@@ -250,10 +249,10 @@ public class RestBucksClientTest {
     @Test
     @PactTestFor(pactMethod = "placeOrder")
     public void testPlaceOrder() {
-        Item item = new Item("latte", 1, "whole", "small");
-        OrderDetails orderDetails = new OrderDetails("takeAway", List.of(item));
+        var item = new Item("latte", 1, "whole", "small");
+        var orderDetails = new OrderDetails("takeAway", List.of(item));
 
-        Order order = client.bookOrder(orderDetails);
+        var order = client.bookOrder(orderDetails);
 
         assertAll(
                 () -> assertNotNull(order),
@@ -265,7 +264,7 @@ public class RestBucksClientTest {
     @Test
     @PactTestFor(pactMethod = "order")
     public void testGetOrder() {
-        Order order = client.getOrder(1);
+        var order = client.getOrder(1);
 
         assertAll(
                 () -> assertNotNull(order),
@@ -279,17 +278,17 @@ public class RestBucksClientTest {
     @Test
     @PactTestFor(pactMethod = "orderDoesNotExist")
     public void testOrderDoesNotExist() {
-        OrderNotFoundException ex = assertThrows(OrderNotFoundException.class, () -> client.getOrder(1L));
+        var ex = assertThrows(OrderNotFoundException.class, () -> client.getOrder(1L));
         assertEquals(1, ex.getId());
     }
 
     @Test
     @PactTestFor(pactMethod = "updatePendingOrder")
     public void testUpdatePendingOrder() {
-        Item item = new Item("latte", 1, "skim", "small");
-        OrderDetails orderDetails = new OrderDetails("takeAway", List.of(item));
+        var item = new Item("latte", 1, "skim", "small");
+        var orderDetails = new OrderDetails("takeAway", List.of(item));
 
-        Order order = client.updateOrder(1, orderDetails);
+        var order = client.updateOrder(1, orderDetails);
 
         assertAll(
                 () -> assertNotNull(order),
@@ -301,13 +300,13 @@ public class RestBucksClientTest {
     @Test
     @PactTestFor(pactMethod = "updateServedOrder")
     public void testUpdateServedOrder() {
-        Item item = new Item("latte", 1, "skim", "small");
-        OrderDetails orderDetails = new OrderDetails("takeAway", List.of(item));
+        var item = new Item("latte", 1, "skim", "small");
+        var orderDetails = new OrderDetails("takeAway", List.of(item));
 
-        OrderAlreadyServedException ex = assertThrows(OrderAlreadyServedException.class,
+        var ex = assertThrows(OrderAlreadyServedException.class,
                 () -> client.updateOrder(1, orderDetails));
 
-        Order order = ex.getOrder();
+        var order = ex.getOrder();
         assertAll(
                 () -> assertNotNull(order),
                 () -> assertTrue(order.getId() > 0),
@@ -320,10 +319,10 @@ public class RestBucksClientTest {
     @Test
     @PactTestFor(pactMethod = "updateNonexistentOrder")
     void testUpdateNonexistentOrder() {
-        Item item = new Item("latte", 1, "skim", "small");
-        OrderDetails orderDetails = new OrderDetails("takeAway", List.of(item));
+        var item = new Item("latte", 1, "skim", "small");
+        var orderDetails = new OrderDetails("takeAway", List.of(item));
 
-        OrderNotFoundException ex = assertThrows(OrderNotFoundException.class, () -> client.updateOrder(1L, orderDetails));
+        var ex = assertThrows(OrderNotFoundException.class, () -> client.updateOrder(1L, orderDetails));
         assertEquals(1, ex.getId());
     }
 
@@ -336,14 +335,14 @@ public class RestBucksClientTest {
     @Test
     @PactTestFor(pactMethod = "cancelNonexistentOrder")
     public void testCancelNonexistentOrder() {
-        OrderNotFoundException ex = assertThrows(OrderNotFoundException.class, () -> client.cancelOrder(1L));
+        var ex = assertThrows(OrderNotFoundException.class, () -> client.cancelOrder(1L));
         assertEquals(1, ex.getId());
     }
 
     @Test
     @PactTestFor(pactMethod = "cancelServedOrder")
     public void testCancelServedOrder() {
-        OrderArchivedException ex = assertThrows(OrderArchivedException.class, () -> client.cancelOrder(1L));
+        var ex = assertThrows(OrderArchivedException.class, () -> client.cancelOrder(1L));
         assertEquals(1, ex.getId());
     }
 }

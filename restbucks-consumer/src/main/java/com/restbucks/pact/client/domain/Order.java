@@ -36,7 +36,7 @@ public final class Order {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Order order = (Order) o;
+        var order = (Order) o;
         return id == order.id &&
                 details.equals(order.details) &&
                 status.equals(order.status);

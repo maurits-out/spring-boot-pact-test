@@ -43,7 +43,7 @@ public final class Item {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Item item = (Item) o;
+        var item = (Item) o;
         return quantity == item.quantity &&
                 name.equals(item.name) &&
                 milk.equals(item.milk) &&
