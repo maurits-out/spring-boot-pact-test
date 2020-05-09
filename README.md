@@ -30,6 +30,7 @@ First obtain the images using the following commands:
 ```bash
 podman pull postgres
 podman pull dius/pact-broker
+podman pull pactfoundation/pact-cli
 ```
 
 Next create a pod as follows:
@@ -59,6 +60,13 @@ podman run --detach --env PACT_BROKER_DATABASE_USERNAME=postgres \
 
 To verify all is running properly open a browser and navigate to http://localhost:8080. You should be able to see the 
 web interface of the Pact Broker.
+
+Running the Pact CLI is a bit cumbersome:
+
+```bash
+podman run --rm --pod pact-pod pactfoundation/pact-cli:latest broker describe-version \
+    --pacticipant=RestBucksClient --broker-base-url=http://localhost
+```
 
 # Project structure
 The pact-test is a Spring Boot project consisting of two submodules. The first module is *restbucks-consumer* and it
