@@ -40,6 +40,7 @@ public class RestBucksClientTest {
     }
 
     @Pact(consumer = "RestBucksClient")
+    @SuppressWarnings("unused")
     public RequestResponsePact placeOrder(PactDslWithProvider builder) {
         return builder
                 .uponReceiving("a request to create a coffee order")
@@ -47,14 +48,13 @@ public class RestBucksClientTest {
                 .method("POST")
                 .body(newJsonBody(details -> {
                     details.stringValue("location", "takeAway");
-                    details.array("items", items -> {
-                        items.object(item -> {
-                            item.stringValue("name", "latte");
-                            item.numberValue("quantity", 1);
-                            item.stringValue("milk", "whole");
-                            item.stringValue("size", "small");
-                        });
-                    });
+                    details.array("items", items ->
+                            items.object(item -> {
+                                item.stringValue("name", "latte");
+                                item.numberValue("quantity", 1);
+                                item.stringValue("milk", "whole");
+                                item.stringValue("size", "small");
+                            }));
                 }).build())
                 .willRespondWith()
                 .status(HTTP_CREATED)
@@ -63,20 +63,20 @@ public class RestBucksClientTest {
                     order.stringValue("status", "pending");
                     order.object("details", details -> {
                         details.stringValue("location", "takeAway");
-                        details.array("items", items -> {
-                            items.object(item -> {
-                                item.stringValue("name", "latte");
-                                item.numberValue("quantity", 1);
-                                item.stringValue("milk", "whole");
-                                item.stringValue("size", "small");
-                            });
-                        });
+                        details.array("items", items ->
+                                items.object(item -> {
+                                    item.stringValue("name", "latte");
+                                    item.numberValue("quantity", 1);
+                                    item.stringValue("milk", "whole");
+                                    item.stringValue("size", "small");
+                                }));
                     });
                 }).build())
                 .toPact();
     }
 
     @Pact(consumer = "RestBucksClient")
+    @SuppressWarnings("unused")
     public RequestResponsePact order(PactDslWithProvider builder) {
         return builder
                 .given("an order")
@@ -102,6 +102,7 @@ public class RestBucksClientTest {
     }
 
     @Pact(consumer = "RestBucksClient")
+    @SuppressWarnings("unused")
     public RequestResponsePact updatePendingOrder(PactDslWithProvider builder) {
         return builder
                 .given("a pending order with Caffe Latte and milk set to 'whole'")
@@ -110,14 +111,13 @@ public class RestBucksClientTest {
                 .method("PUT")
                 .body(newJsonBody(details -> {
                     details.stringValue("location", "takeAway");
-                    details.array("items", items -> {
-                        items.object(item -> {
-                            item.stringValue("name", "latte");
-                            item.numberValue("quantity", 1);
-                            item.stringValue("milk", "skim");
-                            item.stringValue("size", "small");
-                        });
-                    });
+                    details.array("items", items ->
+                            items.object(item -> {
+                                item.stringValue("name", "latte");
+                                item.numberValue("quantity", 1);
+                                item.stringValue("milk", "skim");
+                                item.stringValue("size", "small");
+                            }));
                 }).build())
                 .willRespondWith()
                 .status(HTTP_OK)
@@ -126,20 +126,20 @@ public class RestBucksClientTest {
                     order.stringValue("status", "pending");
                     order.object("details", details -> {
                         details.stringValue("location", "takeAway");
-                        details.array("items", items -> {
-                            items.object(item -> {
-                                item.stringValue("name", "latte");
-                                item.numberValue("quantity", 1);
-                                item.stringValue("milk", "skim");
-                                item.stringValue("size", "small");
-                            });
-                        });
+                        details.array("items", items ->
+                                items.object(item -> {
+                                    item.stringValue("name", "latte");
+                                    item.numberValue("quantity", 1);
+                                    item.stringValue("milk", "skim");
+                                    item.stringValue("size", "small");
+                                }));
                     });
                 }).build())
                 .toPact();
     }
 
     @Pact(consumer = "RestBucksClient")
+    @SuppressWarnings("unused")
     public RequestResponsePact updateServedOrder(PactDslWithProvider builder) {
         return builder
                 .given("a served order")
@@ -148,14 +148,13 @@ public class RestBucksClientTest {
                 .method("PUT")
                 .body(newJsonBody(details -> {
                     details.stringValue("location", "takeAway");
-                    details.array("items", items -> {
-                        items.object(item -> {
-                            item.stringValue("name", "latte");
-                            item.numberValue("quantity", 1);
-                            item.stringValue("milk", "skim");
-                            item.stringValue("size", "small");
-                        });
-                    });
+                    details.array("items", items ->
+                            items.object(item -> {
+                                item.stringValue("name", "latte");
+                                item.numberValue("quantity", 1);
+                                item.stringValue("milk", "skim");
+                                item.stringValue("size", "small");
+                            }));
                 }).build())
                 .willRespondWith()
                 .status(HTTP_CONFLICT)
@@ -176,6 +175,7 @@ public class RestBucksClientTest {
     }
 
     @Pact(consumer = "RestBucksClient")
+    @SuppressWarnings("unused")
     public RequestResponsePact updateNonexistentOrder(PactDslWithProvider builder) {
         return builder
                 .given("no order exists with id 1")
@@ -184,14 +184,13 @@ public class RestBucksClientTest {
                 .method("PUT")
                 .body(newJsonBody(details -> {
                     details.stringValue("location", "takeAway");
-                    details.array("items", items -> {
-                        items.object(item -> {
-                            item.stringValue("name", "latte");
-                            item.numberValue("quantity", 1);
-                            item.stringValue("milk", "skim");
-                            item.stringValue("size", "small");
-                        });
-                    });
+                    details.array("items", items ->
+                            items.object(item -> {
+                                item.stringValue("name", "latte");
+                                item.numberValue("quantity", 1);
+                                item.stringValue("milk", "skim");
+                                item.stringValue("size", "small");
+                            }));
                 }).build())
                 .willRespondWith()
                 .status(HTTP_NOT_FOUND)
@@ -199,6 +198,7 @@ public class RestBucksClientTest {
     }
 
     @Pact(consumer = "RestBucksClient")
+    @SuppressWarnings("unused")
     public RequestResponsePact orderDoesNotExist(PactDslWithProvider builder) {
         return builder
                 .given("no order exists with id 1")
@@ -211,6 +211,7 @@ public class RestBucksClientTest {
     }
 
     @Pact(consumer = "RestBucksClient")
+    @SuppressWarnings("unused")
     public RequestResponsePact cancelPendingOrder(PactDslWithProvider builder) {
         return builder
                 .given("a pending order")
@@ -223,6 +224,7 @@ public class RestBucksClientTest {
     }
 
     @Pact(consumer = "RestBucksClient")
+    @SuppressWarnings("unused")
     public RequestResponsePact cancelNonexistentOrder(PactDslWithProvider builder) {
         return builder
                 .given("no order exists with id 1")
@@ -235,6 +237,7 @@ public class RestBucksClientTest {
     }
 
     @Pact(consumer = "RestBucksClient")
+    @SuppressWarnings("unused")
     public RequestResponsePact cancelServedOrder(PactDslWithProvider builder) {
         return builder
                 .given("a served order")
