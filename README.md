@@ -1,5 +1,3 @@
-*Under construction*
-
 # Introduction
 My demo project to learn about contract testing ([Fowler][1]) and consumer driven contracts ([Robinson][2]) using
  [Pact][3]. I recommend you to read these blog posts before moving on.
